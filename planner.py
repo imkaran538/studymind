@@ -6,7 +6,7 @@ Generates a day-by-day study plan from topics + deadline using Gemini.
 import google.generativeai as genai
 
 # genai is configured centrally in app.py
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 
 def generate_plan(topics: list[str], days_available: int, hours_per_day: float, exam_name: str = "Exam") -> str:
