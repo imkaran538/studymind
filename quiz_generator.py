@@ -8,8 +8,8 @@ import re
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
-# genai is configured centrally in app.py
-model = genai.GenerativeModel("gemini-1.5-flash")
+# Updated to use a current active stable model
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 def clean_input_text(text: str) -> str:
     """Helper to remove duplicate lines/spaces from PDF parsing."""
@@ -51,7 +51,7 @@ TEXT:
         raw = re.sub(r"\n?```$", "", raw)
         return json.loads(raw)
     except ResourceExhausted:
-        return [{"question": "The quiz generator is out of temporary free tokens. Please wait 30-60 seconds and hit submit again.", "options": {}, "answer": "", "explanation": ""}]
+        return [{"question": "The quiz generator is out of temporary tokens. Please wait 30-60 seconds and try again.", "options": {}, "answer": "", "explanation": ""}]
     except (json.JSONDecodeError, Exception):
         return [{"question": "Could not parse quiz. Please try again with a different portion of text.", "options": {}, "answer": "", "explanation": ""}]
 
@@ -89,7 +89,7 @@ TEXT:
         raw = re.sub(r"\n?```$", "", raw)
         return json.loads(raw)
     except ResourceExhausted:
-        return [{"question": "The quiz generator is out of temporary free tokens. Please try again shortly.", "sample_answer": ""}]
+        return [{"question": "The quiz generator is out of temporary tokens. Please try again shortly.", "sample_answer": ""}]
     except (json.JSONDecodeError, Exception):
         return [{"question": "Could not parse short answer quiz. Please try again.", "sample_answer": ""}]
 
