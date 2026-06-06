@@ -6,7 +6,7 @@ Generates structured summaries from extracted PDF text using Gemini.
 import google.generativeai as genai
 
 # genai is configured centrally in app.py
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 
 def summarize(text: str, style: str = "detailed") -> str:
