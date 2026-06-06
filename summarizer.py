@@ -6,8 +6,8 @@ Generates structured summaries from extracted PDF text using Gemini.
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
-# genai is configured centrally in app.py
-model = genai.GenerativeModel("gemini-1.5-flash")
+# Updated to use a current active stable model
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 
 def summarize(text: str, style: str = "detailed") -> str:
@@ -31,7 +31,7 @@ def summarize(text: str, style: str = "detailed") -> str:
 
     instruction = style_instructions.get(style, style_instructions["detailed"])
 
-    # Heavy text optimization: Condense structural formatting gaps from PDFs
+    # Compress structural gaps from parsed PDFs
     clean_text = " ".join(text.split())
 
     prompt = f"""{instruction}
@@ -49,7 +49,7 @@ Respond only with the summary — no preamble."""
     except ResourceExhausted:
         return (
             "### Quota limit exceeded\n"
-            "The document provided contains too many context tokens or your Gemini free account tier has run out of points for the minute. "
+            "The document provided contains too many context tokens or your Gemini account tier has run out of units. "
             "Please try parsing a smaller snippet or wait a moment before trying again."
         )
     except Exception as e:
