@@ -6,8 +6,8 @@ Generates a day-by-day study plan from topics + deadline using Gemini.
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
-# genai is configured centrally in app.py
-model = genai.GenerativeModel("gemini-1.5-flash")
+# Updated to use a current active stable model
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 
 def generate_plan(topics: list[str], days_available: int, hours_per_day: float, exam_name: str = "Exam") -> str:
@@ -54,7 +54,6 @@ def ask_doubt(context: str, question: str) -> str:
     """
     Answer a student's doubt based on the study material context.
     """
-    # Clean up excessive spacing in context
     clean_context = " ".join(context.split())
 
     prompt = f"""You are a helpful tutor. Answer the student's question based on the provided study material.
