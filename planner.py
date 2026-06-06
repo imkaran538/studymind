@@ -4,25 +4,17 @@ Generates a day-by-day study plan from topics + deadline using Gemini.
 """
 
 import google.generativeai as genai
+from google.api_core.exceptions import ResourceExhausted
 
 # genai is configured centrally in app.py
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 def generate_plan(topics: list[str], days_available: int, hours_per_day: float, exam_name: str = "Exam") -> str:
     """
     Generate a structured study plan.
-
-    Args:
-        topics: list of topic strings to cover
-        days_available: number of days until exam
-        hours_per_day: hours the student can study each day
-        exam_name: name of the exam or subject
-
-    Returns:
-        Markdown-formatted study plan as a string.
     """
-    topics_str = "\n".join(f"- {t}" for t in topics)
+    topics_str = "\n".join(f"- {t.strip()}" for t in topics if t.strip())
     total_hours = days_available * hours_per_day
 
     prompt = f"""You are an expert academic coach. Create a practical, day-by-day study plan for a student.
@@ -45,25 +37,42 @@ Guidelines:
 
 Return only the study plan — no preamble."""
 
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except ResourceExhausted:
+        return (
+            "## Quota Limit Reached\n"
+            "The study planner is currently experiencing high demand or free-tier quota limits. "
+            "Please wait a minute or two and try generating your study plan again."
+        )
+    except Exception as e:
+        return f"An error occurred while generating your plan: {str(e)}"
 
 
 def ask_doubt(context: str, question: str) -> str:
     """
     Answer a student's doubt based on the study material context.
     """
+    # Clean up excessive spacing in context
+    clean_context = " ".join(context.split())
+
     prompt = f"""You are a helpful tutor. Answer the student's question based on the provided study material.
 Be clear, concise, and encouraging. If the answer isn't in the material, say so and give a general answer.
 
 STUDY MATERIAL (excerpt):
 \"\"\"
-{context[:4000]}
+{clean_context[:3000]}
 \"\"\"
 
 STUDENT QUESTION: {question}
 
 Answer:"""
 
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    try:
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except ResourceExhausted:
+        return "I am temporarily unable to answer doubts due to API rate limits. Please try your question again in a moment!"
+    except Exception as e:
+        return f"Could not fetch an answer due to an unexpected error: {str(e)}"
