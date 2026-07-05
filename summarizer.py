@@ -7,7 +7,7 @@ import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
 # Updated to use a current active stable model
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-2.5-pro")
 
 
 def summarize(text: str, style: str = "detailed") -> str:
@@ -20,8 +20,10 @@ def summarize(text: str, style: str = "detailed") -> str:
             "important idea of the text."
         ),
         "detailed": (
-            "Write a detailed summary organized by topic. Use clear headings "
-            "for each major section and list the key points under each heading."
+            "Provide a comprehensive, highly accurate summary of this entire document. "
+            "Organize your summary sequentially by its major topics/chapters. Use bold Markdown "
+            "headings for each major section, and list detailed key points, data points, or "
+            "conclusions reached within that section. Maintain strict factual alignment with the source."
         ),
         "bullets": (
             "List the 10 most important facts or concepts from the text as "
@@ -38,9 +40,8 @@ def summarize(text: str, style: str = "detailed") -> str:
 
 TEXT:
 \"\"\"
-{clean_text[:4500]}
+{clean_text[:1000000]}
 \"\"\"
-
 Respond only with the summary — no preamble."""
 
     try:
