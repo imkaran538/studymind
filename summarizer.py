@@ -7,7 +7,7 @@ import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
 # Updated to use a current active stable model
-model = genai.GenerativeModel("gemini-2.5-pro")
+model = genai.GenerativeModel("gemini-3.1-flash-lite")
 
 
 def summarize(text: str, style: str = "detailed") -> str:
@@ -40,7 +40,7 @@ def summarize(text: str, style: str = "detailed") -> str:
 
 TEXT:
 \"\"\"
-{clean_text[:1000000]}
+{clean_text[:10000]}
 \"\"\"
 Respond only with the summary — no preamble."""
 
